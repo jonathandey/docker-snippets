@@ -1,0 +1,18 @@
+{
+  # in this instance, the service does not require a SSL certificate	
+  auto_https off
+}
+
+# Expore the caddy (http) service on port 80 (this isn't externally available)
+:80
+
+# Maps to the "app" service from the "docker-compose" file, on port 8025.
+# This is achieved using dockers internal networking.
+reverse_proxy app:8025
+
+# username and password are both mailhog
+# ADVISED: a new password can be generated using `sudo docker run -it caddy:2.3.0-alpine caddy hash-password`
+# see more: https://caddyserver.com/docs/command-line#caddy-hash-password
+basicauth {
+  mailhog JDJhJDE0JDNYdG02a3J4cGdmSHB2VGJocklLTC5scEVJemdUZ0Y0R1piWDlIRm4wYVZCMkdxNlJWM2NH
+}

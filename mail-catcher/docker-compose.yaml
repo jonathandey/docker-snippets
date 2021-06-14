@@ -1,0 +1,29 @@
+# Create an "app" network for the services to communicate on
+networks:
+  app:
+
+services:
+  # Caddy is fronting the MailHog app to provide basic authentication (see the Caddyfile for username and password)
+  http:
+    image: caddy:2.3.0-alpine
+    # Map port 80 Caddy is exposing (configured in the Caddyfile) to port 8025 on the host
+    ports:
+      - 8025:80
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - app
+    restart: always
+
+  app:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      # uncomment the next line if you want to access mailhog directly on port 8026
+      # - 8026:8025
+
+      # The "127.0.0.1" ensures this SMTP port is not exposed to the internet, and only on the host
+      # This will be needed to configure your SMTP settings for your app.
+      - "127.0.0.1:1025:1025"
+    networks:
+      - app
+    restart: always
